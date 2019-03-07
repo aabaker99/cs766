@@ -1,0 +1,59 @@
+matlab.engine
+
+Hello all:
+
+Please feel free to choose any template or organization for the project proposal (see below for an example outline). This should not be too long (usually 2-3 pages should be enough). 
+
+The proposal should be submitted as a single document (pdf or word) on Canvas - an assignment has been created there. You should submit a single document per team; please clearly specify the names and IDs of all the team members on the first page. 
+
+
+An example proposal outline (1-2 paragraphs for each of the following points):
+
+1) Briefly explain what problem you are trying to solve.
+a) Segment
+- Segment images of cells from the Caicedo Cell Painting dataset
+- Analyze different segmentation techniques
+- Images have 5 channels
+- Image channels may not be as smooth as larger objects like cats
+
+b) Feature extraction
+- Compute features for each cell such as its size, shape, texture, etc.
+
+c) Unsupervised learning
+- See if the same treatments cluster together
+
+2) Why is this problem important? Why are you interested in it?
+- Cure cancer!
+
+3) What is the current state-of-the-art? 
+a) Segementation
+- Normal images: color-based k-means, active clustering, thresholding, Otsu's method (Image segmentation wiki)
+
+4) Are you planning on re-implementing an existing solution, or propose a new approach?** 
+a) Segementation
+- re-implement one
+- how to combine 5 channels?
+- how to combine multiple fields of view?
+
+5) If you are proposing your own approach, why do you think existing approaches cannot adequately solve this problem? Why do you think you solution will work better? 
+6) How will you evaluate the performance of your solution? What results and comparisons are you eventually planning to show? Include a time-line that you would like to follow. 
+
+c) Learning
+- Do unsupervised learning to see if the treatments cluster together?
+- Can we do a supervised learning approach to predict if the cells are treated or not
+
+Timeline
+
+Feb 18 Collect data
+Feb 25 Experiment with existing segmentation techniques
+March 04/March 11: Modify best segmentation technique to fit 5 channels or overcome non-smooth stains
+March 18 Feature extraction using MATLAB regionprops as well as custom feature extractors
+March 25 (Midterm Report due March 27): Feature extraction
+April 01 Feature extraction
+April 08 Learning
+April 15 Prepare presentation
+April 22 Done
+
+** Doing something novel and creative would get a higher grade. Since doing something novel is also risky, you may first want to implement an existing approach that you know works. That way, you will also have a baseline to compare your own approach against. 
+
+Please let me know if you have any questions.
