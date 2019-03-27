@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 import sys, argparse
+import os, os.path
 import subprocess as sp
 import requests
 import re
@@ -31,7 +32,7 @@ FOVS = ['s1', 's2', 's3', 's4', 's5', 's6', 's7', 's8', 's9']
 FOVS_SET = set(FOVS)
 
 regexp = re.compile('[^_]+_([^_]+)_([^_]+).*\.tif')
-def find_well_and_fov(dirpath, well, fov)
+def find_well_and_fov(dirpath, well, fov):
   """
   Wells 1-384 are numbered A01 to P24
   Fields of view 1-9 are called s1 to s9
@@ -48,7 +49,7 @@ def find_well_and_fov(dirpath, well, fov)
   for fname in fnames:
     match_data = regexp.match(fname)
     if match_data is not None:
-      if match_data.group(1) == well and match_data.group(2) == fov:
+      if match_data.group(1).upper() == well and match_data.group(2).lower() == fov:
         rv = os.path.join(dirpath, fname)
         break
   return rv
@@ -71,7 +72,7 @@ def download_and_extract(outdir, plate, channel):
 
   # unzipped output is placed in <outdir>, output assumed to exist in a directory <dir> for <dir>.zip
   dirpath, ext = os.path.splitext(fp) 
-  if not os.path.exists(dp):
+  if not os.path.exists(dirpath):
     args = ['unzip', '-d', outdir, fp]
     sp.check_call(args)
 
@@ -97,11 +98,12 @@ def main():
   for plate in PLATES:
     nucleus_dp = download_and_extract(args.outdir, plate, CHANNELS[0])
     nucleus_fp = find_well_and_fov(nucleus_dp, 'A01', 's1')
+    nucleus_coord_csv = os.path.join(args.outdir, 'nucleus.csv')
 
     golgi_dp = download_and_extract(args.outdir, plate, CHANNELS[3])
     golgi_fp = find_well_and_fov(golgi_dp, 'A01', 's1')
 
-    matlab_args = ['matlab', '-r', 'cell_segmentation(\'{}\', \'{}\')'.format(nucleus_fp, golgi_fp), '-nosplash', 'nodisplay']
+    matlab_args = ['matlab', '-nosplash', '-nodisplay', '-r', 'cell_centers(\'{}\', \'{}\'); quit'.format(nucleus_fp, nucleus_coord_csv)]
     sp.check_call(matlab_args)
   
 if __name__ == "__main__":
