@@ -7,9 +7,9 @@ import skimage.filters
 
 def main():
   parser = argparse.ArgumentParser()
-  parser.add_argument('--cell-centers', required=True)
-  parser.add_argument('--image-file', required=True)
-  parser.add_argument('--outfile', required=True)
+  parser.add_argument('--cell-centers', required=True, help="Cell centers found by connected components on nucleus channel")
+  parser.add_argument('--image-file', required=True, help="Ph_golgi channel")
+  parser.add_argument('--outfile', required=True, help="Matrix with the same dimensions as <image_file> with an integer cluster label in each cell which identifies which cluster the corresponding pixel belongs to.")
   args = parser.parse_args()
 
   cell_centers = np.genfromtxt(args.cell_centers, delimiter=",")
