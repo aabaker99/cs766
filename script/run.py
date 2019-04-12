@@ -96,15 +96,21 @@ def main():
   PLATES = [24278]
 
   for plate in PLATES:
+    well = 'A01'
+    fov = 's1'
     nucleus_dp = download_and_extract(args.outdir, plate, CHANNELS[0])
-    nucleus_fp = find_well_and_fov(nucleus_dp, 'A01', 's1')
+    nucleus_fp = find_well_and_fov(nucleus_dp, well, fov)
     nucleus_coord_csv = os.path.join(args.outdir, 'nucleus.csv')
 
     golgi_dp = download_and_extract(args.outdir, plate, CHANNELS[3])
-    golgi_fp = find_well_and_fov(golgi_dp, 'A01', 's1')
+    golgi_fp = find_well_and_fov(golgi_dp, well, fov)
 
     matlab_args = ['matlab', '-nosplash', '-nodisplay', '-r', 'cell_centers(\'{}\', \'{}\'); quit'.format(nucleus_fp, nucleus_coord_csv)]
     sp.check_call(matlab_args)
+
+    cluster_labels_fp = os.path.join(args.outdir, '{}_{}_clusters.csv'.format(well, fov))
+    clustering_args = ['cell_clustering.py', '--cell-centers', nucleus_coord_csv, '--image-file', golgi_fp, '--outfile', cluster_labels_fp]
+    sp.check_call(clustering_args)
   
 if __name__ == "__main__":
   main()
