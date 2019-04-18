@@ -29,4 +29,4 @@ figure(2); imshow(P);hold on;
 plot(rv(:,1),rv(:,2),'r*');
 
 %% Using cell centers do k means clustering
-
+imwrite(P, 'tmp.tif', 'TIFF');
