@@ -52,16 +52,20 @@ Construct a traditional machine learning data matrix by extracting features from
 
   ofh = open(args.outfile, 'w')
 
-  label_image = np.genfromtxt(args.label_image, delimiter=",").astype('int') + 1
   intensity_image = imread(args.input_image)
-  prop_list = regionprops(label_image, intensity_image)
+  label_image = np.genfromtxt(args.label_image, delimiter=",").astype('int') + 1
 
-  # TODO check correspondence of regionprops and texture props
-  # perhaps since we need the boolean intensity image for each object anyway we can just call regionprops on that
-  # slice instead
   ofh.write('#{}\n'.format(",".join(HEADER)))
   for i in range(np.max(label_image)):
-    prop = prop_list[i]
+    intensity_image_slice = np.copy(intensity_image)
+    intensity_image_slice[label_image != i+1] = 0
+
+    label_image_bool = np.copy(label_image)
+    label_image_bool[label_image != i+1] = 0
+    label_image_bool[label_image == i+1] = 1
+
+    prop_list = regionprops(label_image_bool, intensity_image_slice)
+    prop = prop_list[0]
     # region properties - {{
     # extract simple scalar region properties
     scalar_region_props = list(map(lambda x: prop[x], SCALAR_REGION_PROPERTIES))
@@ -76,8 +80,6 @@ Construct a traditional machine learning data matrix by extracting features from
     # }} - region properties
 
     # extract texture properties for the object i - {{
-    intensity_image_slice = np.copy(intensity_image)
-    intensity_image_slice[label_image != i+1] = 0
 
     # 2nd and 3rd parameters encode a 1-pixel offset to the right, up, left, and down
     # n_dists = 1, n_angle = 4
