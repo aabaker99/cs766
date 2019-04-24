@@ -81,6 +81,7 @@ def download_and_extract(outdir, plate, channel):
 def main():
   parser = argparse.ArgumentParser()
   parser.add_argument("--outdir", required=True)
+  parser.add_argument('--treatments', '-t', required=True)
   parser.add_argument('--plate', '-p', help='Download a specific plate')
   parser.add_argument('--well', '-w')
   parser.add_argument('--field-of-view', '-f')
@@ -95,22 +96,37 @@ def main():
   # TODO remove
   PLATES = [24278]
 
+  fov = 's1'
   for plate in PLATES:
-    well = 'A01'
-    fov = 's1'
-    nucleus_dp = download_and_extract(args.outdir, plate, CHANNELS[0])
-    nucleus_fp = find_well_and_fov(nucleus_dp, well, fov)
-    nucleus_coord_csv = os.path.join(args.outdir, 'nucleus.csv')
+    for well in WELLS:
+      nucleus_dp = download_and_extract(args.outdir, plate, CHANNELS[0])
+      nucleus_fp = find_well_and_fov(nucleus_dp, well, fov)
+      nucleus_coord_csv = os.path.join(args.outdir, '{}_{}_{}_nucleus_centers.csv'.format(plate, well, fov))
 
-    golgi_dp = download_and_extract(args.outdir, plate, CHANNELS[3])
-    golgi_fp = find_well_and_fov(golgi_dp, well, fov)
+      golgi_dp = download_and_extract(args.outdir, plate, CHANNELS[3])
+      golgi_fp = find_well_and_fov(golgi_dp, well, fov)
 
-    matlab_args = ['matlab', '-nosplash', '-nodisplay', '-r', 'cell_centers(\'{}\', \'{}\'); quit'.format(nucleus_fp, nucleus_coord_csv)]
-    sp.check_call(matlab_args)
+      # identify nuclei centers to initialize kNN
+      matlab_args = ['matlab', '-nosplash', '-nodisplay', '-r', 'cell_centers(\'{}\', \'{}\'); quit'.format(nucleus_fp, nucleus_coord_csv)]
+      sp.check_call(matlab_args)
 
-    cluster_labels_fp = os.path.join(args.outdir, '{}_{}_clusters.csv'.format(well, fov))
-    clustering_args = ['cell_clustering.py', '--cell-centers', nucleus_coord_csv, '--image-file', golgi_fp, '--outfile', cluster_labels_fp]
-    sp.check_call(clustering_args)
+      # fuse nucleus and golgi channels
+      fused_outfile = os.path.join(args.outdir, '{}_{}_{}_fused.tif'.format(plate, well, fov))
+      fuse_args = ['fuse.py', '--images', nucleus_fp, golgi_fp, '--outfile', fused_outfile]
+
+      # clustering
+      cluster_labels_fp = os.path.join(args.outdir, '{}_{}_{}_clusters.csv'.format(plate, well, fov))
+      clustering_args = ['cell_clustering.py', '--cell-centers', nucleus_coord_csv, '--image-file', fused_outfile, '--outfile', cluster_labels_fp] # can also provide --outdir to see images
+      sp.check_call(clustering_args)
+
+      # feature extraction
+      extract_args = ['extract_features.py', '-i', fused_outfile, '-l', cluster_labels_fp, '-t', args.treatments, '-o', '{}_{}_{}_features.csv'.format(plate, well, fov)]
+      sp.check_call(extract_args)
+      break
+    break
+
+    # TODO concatenate feature files
+    # TODO learning
   
 if __name__ == "__main__":
   main()
