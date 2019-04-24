@@ -7,6 +7,7 @@ http://gigadb.org/dataset/100351
 - Probably a mean over the 4 replicates done in the experiment (quadruplicates).
 - Contains data that is also present in extracted\_features/<ID>.sqlite where columns in the csv are named <TABLE_NAME>_<COLUMN_NAME>
 - Contains metadata that is not present in extracted\_features/<ID>.sqlite such as the ID of the chemical used to treat the cells in @Metadata\_broad\_sample@
+- ftp://parrot.genomics.cn/gigadb/pub/10.5524/100001_101000/100351/profiles.tar.gz last accessed 20190419-12:11:00 CDT
 
 # Channels
 1) Nucleus
