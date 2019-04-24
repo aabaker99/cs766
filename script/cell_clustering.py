@@ -12,7 +12,7 @@ def main():
   parser.add_argument('--cell-centers', required=True, help="Cell centers found by connected components on nucleus channel")
   parser.add_argument('--image-file', required=True, help="Ph_golgi channel")
   parser.add_argument('--outfile', required=True, help="Matrix with the same dimensions as <image_file> with an integer cluster label in each cell which identifies which cluster the corresponding pixel belongs to.")
-  parser.add_argument('--outdir', required=True, help="Location to save segmented images")
+  parser.add_argument('--outdir', help="Location to save segmented images; if not provided, segmented images will not be saved")
   args = parser.parse_args()
 
   cell_centers = np.genfromtxt(args.cell_centers, delimiter=",")
@@ -58,11 +58,12 @@ def main():
     arr_labels[i,j] = kmeans.labels_[k]
   np.savetxt(args.outfile, arr_labels, delimiter=",", fmt='%d')
 
-  for i in range(n_cells):
-    fp = os.path.join(args.outdir, 'cell{}.png'.format(i))
-    arr_i = np.copy(arr)
-    arr_i[arr_labels != i] = 0
-    skimage.io.imsave(fp, arr_i)
+  if args.outdir is not None:
+    for i in range(n_cells):
+      fp = os.path.join(args.outdir, 'cell{}.png'.format(i))
+      arr_i = np.copy(arr)
+      arr_i[arr_labels != i] = 0
+      skimage.io.imsave(fp, arr_i)
 
 if __name__ == "__main__":
   main()
