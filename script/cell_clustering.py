@@ -16,6 +16,8 @@ def main():
   args = parser.parse_args()
 
   cell_centers = np.genfromtxt(args.cell_centers, delimiter=",")
+  if(len(cell_centers.shape) == 1):
+    cell_centers = cell_centers.reshape(1, 2)
   n_cells, n_dim = cell_centers.shape
 
   # use MATLAB style for image indexes
