@@ -90,7 +90,8 @@ Construct a traditional machine learning data matrix by extracting features from
 
     # 2nd and 3rd parameters encode a 1-pixel offset to the right, up, left, and down
     # n_dists = 1, n_angle = 4
-    grey_rv = greycomatrix(intensity_image_slice, [1], [0, np.pi/2, np.pi, 3*np.pi/2], levels=np.max(intensity_image_slice+1))
+    levels = np.max(intensity_image_slice) + 1
+    grey_rv = greycomatrix(intensity_image_slice, [1], [0, np.pi/2, np.pi, 3*np.pi/2], levels=levels)
     # greycoprops is (n_dist x n_angle)
     # compute average of the texture property
     avg_texture_props = []
