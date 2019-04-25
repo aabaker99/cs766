@@ -5,6 +5,11 @@ from skimage.io import imread
 from skimage.measure import regionprops
 from skimage.feature.texture import greycomatrix, greycoprops
 
+METADATA = [
+  'plate',
+  'well'
+]
+
 SCALAR_REGION_PROPERTIES = [
   'area',
   'convex_area',
@@ -38,12 +43,14 @@ TEXTURE_PROPS = [
   'correlation'
 ]
 
-HEADER = SCALAR_REGION_PROPERTIES + OTHER_REGION_PROPERTIES + TEXTURE_PROPS
+HEADER = METADATA + SCALAR_REGION_PROPERTIES + OTHER_REGION_PROPERTIES + TEXTURE_PROPS
 
 def main():
   parser = argparse.ArgumentParser(description="""
 Construct a traditional machine learning data matrix by extracting features from the objects in images.
 """)
+  parser.add_argument('--plate', '-p', help="The plate the input image is associated with", required=True)
+  parser.add_argument('--well', '-w', help="The well the input image is associated with", required=True)
   parser.add_argument("--input-image", "-i", help="Input image for which cell_clustering.py was run on to produce --label-image.", required=True)
   parser.add_argument("--label-image", "-l", help="Output of cell_clustering.py or other method for segmenting images. Must be a CSV of an array of the same shape as the input image and has an integer in each cell assigning a pixel to an object. -1 is used for background pixels. Objects start counting at 0.", required=True)
   parser.add_argument("--treatments", "-t", help="Treatment metadata file output from parse_treatment.py")
@@ -55,7 +62,7 @@ Construct a traditional machine learning data matrix by extracting features from
   intensity_image = imread(args.input_image)
   label_image = np.genfromtxt(args.label_image, delimiter=",").astype('int') + 1
 
-  ofh.write('#{}\n'.format(",".join(HEADER)))
+  ofh.write('{}\n'.format(",".join(HEADER)))
   for i in range(np.max(label_image)):
     intensity_image_slice = np.copy(intensity_image)
     intensity_image_slice[label_image != i+1] = 0
@@ -93,7 +100,7 @@ Construct a traditional machine learning data matrix by extracting features from
     # }} - texture properties
 
     # combine all properties
-    all_props = region_props + avg_texture_props
+    all_props = [args.plate, args.well] + region_props + avg_texture_props
     ofh.write(','.join(map(str, all_props)) + '\n')
 
 if __name__ == "__main__":
