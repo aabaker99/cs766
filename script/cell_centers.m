@@ -1,7 +1,12 @@
 function rv = cell_centers(infile, outfile)
-  % todo switch to python
   arr = imread(infile);
-  bw = imbinarize(arr);
+  thresh = graythresh(arr);
+  if thresh == 0
+    % then otsu's method failed, increase contrast
+    arr = imadjust(arr);
+    thresh = graythresh(arr);
+  end
+  bw = imbinarize(arr, thresh);
   [L, num] = bwlabel(bw);
   rv = zeros(num,2);
   stats = regionprops(L, 'centroid');
