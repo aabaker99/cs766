@@ -78,10 +78,27 @@ def download_and_extract(outdir, plate, channel):
 
   return dirpath
 
+# NOTE different from learning.py version, roughy inverted
+def read_treatments(treatments_fp):
+  """
+  Map integer labels to plates
+  """
+  rv = {}
+  with open(treatments_fp, 'r') as fh:
+    for line in fh:
+      line = line.rstrip()
+      plate, well, drug_id, drug_int = line.split(',')
+      if drug_int in rv:
+        rv[drug_int].append(plate)
+      else:
+        rv[drug_int] = [plate]
+  return rv
+
 def main():
   parser = argparse.ArgumentParser()
   parser.add_argument("--outdir", required=True)
   parser.add_argument('--treatments', '-t', required=True)
+  parser.add_argument('--treatment-sample')
   parser.add_argument('--plate', '-p', help='Download a specific plate')
   parser.add_argument('--well', '-w')
   parser.add_argument('--field-of-view', '-f')
@@ -94,9 +111,29 @@ def main():
     sys.exit(0)
 
   # TODO remove
-  PLATES = [24278]
+  PLATES = None
+  if args.treatment_sample is not None:
+    treatment_to_plates = read_treatments(args.treatments)
+
+    # then define plates by the desired treatments to test
+    treatments = []
+    with open(args.treatment_sample) as fh:
+      for line in fh:
+        line = line.rstrip()
+        treatments.append(line)
+
+    plates_set = set()
+    for treatment in treatments:
+      plates = treatment_to_plates[treatment]
+      for plate in plates:
+        plates_set.add(plate)
+    PLATES = sorted(list(plates_set))
+  else:
+    PLATES = ['24278']
 
   fov = 's1'
+  feature_fps = []
+  print(PLATES)
   for plate in PLATES:
     for well in WELLS:
       nucleus_dp = download_and_extract(args.outdir, plate, CHANNELS[0])
@@ -108,11 +145,13 @@ def main():
 
       # identify nuclei centers to initialize kNN
       matlab_args = ['matlab', '-nosplash', '-nodisplay', '-r', 'cell_centers(\'{}\', \'{}\'); quit'.format(nucleus_fp, nucleus_coord_csv)]
+      print(matlab_args)
       sp.check_call(matlab_args)
 
       # fuse nucleus and golgi channels
       fused_outfile = os.path.join(args.outdir, '{}_{}_{}_fused.tif'.format(plate, well, fov))
       fuse_args = ['fuse.py', '--images', nucleus_fp, golgi_fp, '--outfile', fused_outfile]
+      sp.check_call(fuse_args)
 
       # clustering
       cluster_labels_fp = os.path.join(args.outdir, '{}_{}_{}_clusters.csv'.format(plate, well, fov))
@@ -120,13 +159,19 @@ def main():
       sp.check_call(clustering_args)
 
       # feature extraction
-      extract_args = ['extract_features.py', '-i', fused_outfile, '-l', cluster_labels_fp, '-t', args.treatments, '-o', '{}_{}_{}_features.csv'.format(plate, well, fov)]
+      feature_fp = os.path.join(args.outdir, '{}_{}_{}_features.csv'.format(plate, well, fov))
+      extract_args = ['extract_features.py', '-p', plate, '-w', well, '-i', fused_outfile, '-l', cluster_labels_fp, '-t', args.treatments, '-o', feature_fp]
       sp.check_call(extract_args)
-      break
-    break
+      feature_fps.append(feature_fp)
 
-    # TODO concatenate feature files
-    # TODO learning
+  # concatenate feature files
+  all_feature_fp = os.path.join(args.outdir, 'all_features.csv')
+  cat_args = ['cat'] + feature_fps
+  sp.check_call(cat_args, stdout=all_feature_fp)
+
+  # learning
+  learning_args = ['learn.py', '--data', all_feature_fp, '--treatments', args.treatments, '--outdir', args.outdir]
+  sp.check_call(learning_args)
   
 if __name__ == "__main__":
   main()
