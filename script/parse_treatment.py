@@ -3,6 +3,13 @@ import sys, argparse
 import os, os.path
 import numpy as np
 
+TREATMENTS_HEADER = [
+  'plate',
+  'well',
+  'compound_id',
+  'compound_label'
+]
+
 def parse_mean_well_profiles(chem_to_label, profiles_dir, ofp):
   """
   Parameters
@@ -19,6 +26,7 @@ def parse_mean_well_profiles(chem_to_label, profiles_dir, ofp):
   profile_fps = map(lambda plate_dir: os.path.join(profiles_dir, plate_dir, 'profiles', 'mean_well_profiles.csv'), plate_dirs)
 
   ofh = open(ofp, 'w')
+  ofh.write('#' + ','.join(TREATMENTS_HEADER) + '\n')
   for fp in profile_fps:
     header = None
     with open(fp) as fh:
