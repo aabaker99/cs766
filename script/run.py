@@ -49,7 +49,7 @@ def find_well_and_fov(dirpath, well, fov):
   for fname in fnames:
     match_data = regexp.match(fname)
     if match_data is not None:
-      if match_data.group(1).upper() == well and match_data.group(2).lower() == fov:
+      if match_data.group(1).upper() == well.upper() and match_data.group(2).lower() == fov:
         rv = os.path.join(dirpath, fname)
         break
   return rv
@@ -78,10 +78,10 @@ def download_and_extract(outdir, plate, channel):
 
   return dirpath
 
-# NOTE different from learning.py version, roughy inverted
+# NOTE different from learning.py version, roughly inverted
 def read_treatments(treatments_fp):
   """
-  Map integer labels to plates
+  Map integer labels to plate, well pairs
   """
   rv = {}
   with open(treatments_fp, 'r') as fh:
@@ -89,9 +89,22 @@ def read_treatments(treatments_fp):
       line = line.rstrip()
       plate, well, drug_id, drug_int = line.split(',')
       if drug_int in rv:
-        rv[drug_int].append(plate)
+        rv[drug_int].append((plate, well))
       else:
-        rv[drug_int] = [plate]
+        rv[drug_int] = [(plate, well)]
+  return rv
+
+def read_treatment_controls(treatments_fp, plates_set):
+  """
+  Return plate, well pairs for control wells on <plates>
+  """
+  rv = []
+  with open(treatments_fp, 'r') as fh:
+    for line in fh:
+      line = line.rstrip()
+      plate, well, drug_id, drug_int = line.split(',')
+      if plate in plates_set and drug_int == '0':
+        rv.append((plate, well))
   return rv
 
 def main():
@@ -110,10 +123,9 @@ def main():
       print(plate)
     sys.exit(0)
 
-  # TODO remove
-  PLATES = None
+  plate_well_pairs = []
   if args.treatment_sample is not None:
-    treatment_to_plates = read_treatments(args.treatments)
+    treatment_to_plate_well_pairs = read_treatments(args.treatments)
 
     # then define plates by the desired treatments to test
     treatments = []
@@ -124,18 +136,24 @@ def main():
 
     plates_set = set()
     for treatment in treatments:
-      plates = treatment_to_plates[treatment]
-      for plate in plates:
+      pairs = treatment_to_plate_well_pairs[treatment]
+      for plate, well in pairs:
         plates_set.add(plate)
-    PLATES = sorted(list(plates_set))
+      plate_well_pairs += pairs
+
+    control_pairs = read_treatment_controls(args.treatments, plates_set)
+    plate_well_pairs += control_pairs
   else:
     PLATES = ['24278']
+    for plate in PLATES:
+      for well in WELLS:
+        plate_well_pairs.append((plate, well))
 
   fov = 's1'
   feature_fps = []
-  print(PLATES)
-  for plate in PLATES:
-    for well in WELLS:
+  for plate, well in plate_well_pairs:
+    feature_fp = os.path.join(args.outdir, '{}_{}_{}_features.csv'.format(plate, well, fov))
+    if not os.path.exists(feature_fp):
       nucleus_dp = download_and_extract(args.outdir, plate, CHANNELS[0])
       nucleus_fp = find_well_and_fov(nucleus_dp, well, fov)
       nucleus_coord_csv = os.path.join(args.outdir, '{}_{}_{}_nucleus_centers.csv'.format(plate, well, fov))
@@ -159,15 +177,21 @@ def main():
       sp.check_call(clustering_args)
 
       # feature extraction
-      feature_fp = os.path.join(args.outdir, '{}_{}_{}_features.csv'.format(plate, well, fov))
       extract_args = ['extract_features.py', '-p', plate, '-w', well, '-i', fused_outfile, '-l', cluster_labels_fp, '-t', args.treatments, '-o', feature_fp]
       sp.check_call(extract_args)
+      feature_fps.append(feature_fp)
+    else:
       feature_fps.append(feature_fp)
 
   # concatenate feature files
   all_feature_fp = os.path.join(args.outdir, 'all_features.csv')
-  cat_args = ['cat'] + feature_fps
-  sp.check_call(cat_args, stdout=all_feature_fp)
+  if os.path.exists(all_feature_fp):
+    os.remove(all_feature_fp)
+  all_feature_fh = open(all_feature_fp, 'a')
+  for feature_fp in feature_fps:
+    tail_args = ['tail', '-n+2', feature_fp]
+    sp.check_call(tail_args, stdout=all_feature_fh)
+  all_feature_fh.close()
 
   # learning
   learning_args = ['learn.py', '--data', all_feature_fp, '--treatments', args.treatments, '--outdir', args.outdir]
