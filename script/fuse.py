@@ -21,7 +21,7 @@ Rescale and fuse grayscale images together
   images = list(map(lambda x: imread(x), args.images))
   shape0 = images[0].shape
   for i in range(1, len(images)):
-    if images[i].shape != shape:
+    if images[i].shape != shape0:
       sys.stderr.write('Input images are not of the same size: {} != {} for {} and {}\n'.format(shape0, images[i].shape, args.images[0], args.images[i]))
       sys.exit(1)
 
@@ -33,4 +33,4 @@ Rescale and fuse grayscale images together
   for i, image in enumerate(images):
     product += scalars[i] * image
 
-  imsave(args.outfile, P.astype('uint8'))
+  imsave(args.outfile, product.astype('uint8'))
