@@ -40,6 +40,7 @@ We evaluated the performance of the classifiers by average precision, and plotte
 ## State-of-the-art
 ![](/Images/voronoi.png)
 *Voronoi diagram using nuclei centers*  
+
 ![](/Images/cell profiler.jpg)
 *Manifold regularization [Source: Kim et al. 2014]()*  
 
