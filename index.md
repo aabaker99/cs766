@@ -1,9 +1,9 @@
 # CS 766: Vision Approaches in Phenotypic Cell Approaches
 _Aaron Baker, Ragini Rathore_
 ## Motivation
-![](/Images/intro.jpg)
+![](/Images/intro.png)
 ## State-of-the-art
-![](/Images/voronoi.jpg)
+![](/Images/voronoi.png)
 ## Implementation
   ### Pre-processing
   ### Segmentation Algorithms
