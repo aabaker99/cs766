@@ -61,21 +61,20 @@ It utilizes manifold mathematics to transform Voronoi's Euclidean geometry to ma
 
 ## Implementation
 We implemented the watershed algorithm and the K-means clustering algorithm to initial segment the individual cells and to further use the segmented cells to determine a particular drug efficacy using machine learning techniques for classification.
-  ### Segmentation
-  #### Pre-processing  
-  1. The dataset we used consisted of 5 channels pertaining to the 5 dyes used for illuminating a certain part of the cell. However, the images were not very visible to the naked eye and we had to use a combination of different channels.  
-  To perfectly determine the cell boundaries, we fused the nuclei channel and the golgi body channel images and used these set of fused grayscale images as our input to the segmentation algorithms. This enables to figure out if our segmentation algorithm segments the individual cell boundaries or fails. It also helps us clearly view the images.  
-  ![](/Images/input_fused.png)
-  *Sample dataset fused image*  
+### Segmentation
+#### Pre-processing
+1. The dataset we used consisted of 5 channels pertaining to the 5 dyes used for illuminating a certain part of the cell. However, the images were not very visible to the naked eye and we had to use a combination of different channels.  
+To perfectly determine the cell boundaries, we fused the nuclei channel and the golgi body channel images and used these set of fused grayscale images as our input to the segmentation algorithms. This enables to figure out if our segmentation algorithm segments the individual cell boundaries or fails. It also helps us clearly view the images.  
+![](/Images/input_fused.png)
+*Sample dataset fused image*  
 
-  2. In this pre-processing step, we identified the individual nuclei centers and the total number of nuclei cells in the image. We used the images from the nuclei channel and used [Otsu's thresholding](https://en.wikipedia.org/wiki/Otsu%27s_method) method to find number of nuclei and their centers.  
-  ![](/Images/nucleus_centers.png)
-  *Sample image showing detected nuclei centers using Otsu's method.*  
+2. In this pre-processing step, we identified the individual nuclei centers and the total number of nuclei cells in the image. We used the images from the nuclei channel and used [Otsu's thresholding](https://en.wikipedia.org/wiki/Otsu%27s_method) method to find number of nuclei and their centers.  
+![](/Images/nucleus_centers.png)
+*Sample image showing detected nuclei centers using Otsu's method.*  
 
+#### Segmentation Algorithms
 
-  #### Segmentation Algorithms
-
-  ### Learning using Segmented Cells
+### Learning using Segmented Cells
 
 ## Conclusion
 
