@@ -77,17 +77,22 @@ To perfectly determine the cell boundaries, we fused the nuclei channel and the 
 Watershed algorithm is used in image processing primarily for segmentation purposes. A watershed is a transformation defined on a grayscale image. The name refers metaphorically to a geological watershed, or drainage divide, which separates adjacent drainage basins. The watershed transformation treats the image it operates upon like a topographic map, with the brightness of each point representing its height, and finds the lines that run along the tops of ridges.
 The algorithm floods basins from the initial markers, until basins attributed to different markers meet on watershed lines. These markers are chosen as local minima of the image, from which basins are flooded.  
 
-<img src="Images/watershed_flow.png" width="250" title = "Flowchart">&nbsp; &nbsp; <img src="Images/watershed.png" width="250">  
+<img src="Images/watershed_flow.png" width="250"><img src="Images/watershed.png" width="250">  
 <br/>
 
 Here, we show a sample image passed through the watershed flowchart steps:  
 <br/>
 <img src="Images/init_th.png" width="190">  <img src="Images/dist_transform.png" width="200">&nbsp; &nbsp; <img src="Images/watershed_op.png" width="200">  
-<img src="Images/overseg.png" width="250" align = "center">
-*Over-segmented Image*
+*Intial thresholding*&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+*Distance transform* &nbsp; &nbsp;&nbsp; &nbsp;&nbsp;*Segmented and labelled*
 
-![](/Images/init_th.png =250x) ![](/Images/.png =250x) ![](/Images/watershed_op.png =250x)  
-![](/Images/overseg.png =250x)
+<img src="Images/overseg.png" width="250" align = "center">  
+*Over-segmented Image*  
+
+Here, we see the watershed algorithm has **over segmented** the cells. So, to prevent watershed from over segmenting, we set the initial markers, which are the local minima in the image, to be the nuclei centers which we found in the pre-processing step and repeat the watershed steps. Using this technique, we obtain properly the segmented images. A sample of the segmented cells is shown below.  
+![](Images/segmented2.png)
+*Segmented Image*  
+
 - ###### K-means Clustering
 
 ### Learning using Segmented Cells
