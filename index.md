@@ -2,6 +2,7 @@
 _Aaron Baker, Ragini Rathore_
 ## Motivation
 ![](/Images/intro.png)
+*This is  a caption*
 ## State-of-the-art
 ![](/Images/voronoi.png)
 ## Implementation
@@ -14,4 +15,6 @@ _Aaron Baker, Ragini Rathore_
 - Segmenting cells is difficult due to cell-to-cell contacts.
 - Novel frameworks for evaluating drug efficacy.
 - Evaluate more drugs with more compute power.
+## References
+
 
