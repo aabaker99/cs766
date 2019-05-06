@@ -66,13 +66,20 @@ We implemented the watershed algorithm and the K-means clustering algorithm to i
 1. The dataset we used consisted of 5 channels pertaining to the 5 dyes used for illuminating a certain part of the cell. However, the images were not very visible to the naked eye and we had to use a combination of different channels.  
 To perfectly determine the cell boundaries, we fused the nuclei channel and the golgi body channel images and used these set of fused grayscale images as our input to the segmentation algorithms. This enables to figure out if our segmentation algorithm segments the individual cell boundaries or fails. It also helps us clearly view the images.  
 ![](/Images/input_fused.png)
-*Sample dataset fused image*  
+*Sample dataset fused image*
 
 2. In this pre-processing step, we identified the individual nuclei centers and the total number of nuclei cells in the image. We used the images from the nuclei channel and used [Otsu's thresholding](https://en.wikipedia.org/wiki/Otsu%27s_method) method to find number of nuclei and their centers.  
 ![](/Images/nucleus_centers.png)
-*Sample image showing detected nuclei centers using Otsu's method.*  
+*Sample image showing detected nuclei centers using Otsu's method.*
 
 #### Segmentation Algorithms
+- ###### Watershed Algorithm
+Watershed algorithm is used in image processing primarily for segmentation purposes. A watershed is a transformation defined on a grayscale image. The name refers metaphorically to a geological watershed, or drainage divide, which separates adjacent drainage basins. The watershed transformation treats the image it operates upon like a topographic map, with the brightness of each point representing its height, and finds the lines that run along the tops of ridges.
+The algorithm floods basins from the initial markers, until basins attributed to different markers meet on watershed lines. These markers are chosen as local minima of the image, from which basins are flooded.
+![](/Images/watershed_flow.png "Flowchart") ![](/Images/watershed.png)  
+Here, we show a sample image passed through the watershed flowchart steps:
+
+- ###### K-means Clustering
 
 ### Learning using Segmented Cells
 
@@ -82,6 +89,7 @@ To perfectly determine the cell boundaries, we fused the nuclei channel and the 
 - We needed more compute power to analyze the entire image dataset.
 - Several other segmentation algorithms like Snakes, Active Contours failed to detect the individual cell boundaries.
 - It is difficult to see the individual channels in the original images.
+
 ## Learnings and Future Work
 - Segmenting cells is a difficult task due to cell-to-cell contacts.
 - Novel frameworks for evaluating drug efficacy can be used.
@@ -92,4 +100,5 @@ To perfectly determine the cell boundaries, we fused the nuclei channel and the 
 [3] Bray, M.-A., Gustafsdottir, S. M., Rohban, M. H., Singh, S., Ljosa, V., Sokolnicki, K. L., Carpenter, A. E. (2017). A dataset of images and morphological profiles of 30 000 small-molecule treatments using the Cell Painting assay. GigaScience, 6(12). [https://doi.org/10.1093/gigascience/giw014](https://doi.org/10.1093/gigascience/giw014)  
 [4] Swinney, D. C., & Anthony, J. (2011). How were new medicines discovered? Nature Reviews Drug Discovery, 10(7), 507–519. [https://doi.org/10.1038/nrd3480](https://doi.org/10.1038/nrd3480)  
 [5] Bray, M. A., Singh, S., Han, H., Davis, C. T., Borgeson, B., Hartland, C., & Carpenter, A. E. (2016). Cell Painting, a high-content image-based assay for morphological profiling using multiplexed fluorescent dyes. Nature protocols, 11(9), 1757.  
-[6] Otsu, N. (1979). A threshold selection method from gray-level histograms. IEEE transactions on systems, man, and cybernetics, 9(1), 62-66.[https://doi.org/10.1109/TSMC.1979.4310076](https://doi.org/10.1109/TSMC.1979.4310076)
+[6] Otsu, N. (1979). A threshold selection method from gray-level histograms. IEEE transactions on systems, man, and cybernetics, 9(1), 62-66. [https://doi.org/10.1109/TSMC.1979.4310076](https://doi.org/10.1109/TSMC.1979.4310076)  
+[7] Barnes, R., Lehman, C., Mulla, D., 2014. Priority-flood: An optimal depression-filling and watershed-labeling algorithm for digital elevation models. Computers & Geosciences 62, 117–127. [https://doi.org/10.1016/j.cageo.2013.04.024](https://doi.org/10.1016/j.cageo.2013.04.024)  
