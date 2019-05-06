@@ -24,9 +24,11 @@ There appears to be a significant difference between these two sets of images.
 That is, Parbendazole appears to have some effect.
 Our project aims to discover these types of differences at a large scale, using computer vision tools to analyze the cell images.
 We developed a software pipeline which identifies drugs that affect bone cancer.
+
 1. Segment images of cell populations into images of individual cells.
 2. Featurize individual cell images.
 3. Train a classifier to distinguish treated and untreated cells.
+
 While a traditional applications of machine learning would be interested in using the classifier to predict whether a new cell image has been treated or not, we note that this interpretation of the classifier is not particularly useful because we already know if the cells have been treated or not.
 Instead, if a classifier is able to achieve good performance, there must be some difference between the features of treated and untreated cells.
 In that case, the drug has some apparent effect and we recommend that it is studied more thoroughly.
@@ -38,8 +40,21 @@ Finally, we classified images using a [simple logistic regression classifier](ht
 We evaluated the performance of the classifiers by average precision, and plotted precision-recall curves.
 
 ## State-of-the-art
-![](/Images/voronoi.png)
-*Voronoi diagram using nuclei centers*  
+[CellProfiler](http://dx.doi.org/10.1186/gb-2006-7-10-r100) is a software suite which provides many utilities, one of which performs cell segmentation.
+One of CellProfiler's segmentation tools uses Watershed segmentation, but their research paper notes that Watershed typically oversegments images.
+Another CellProfiler segmentation tool is known as Propagate.
+Propagate is based on Voronoi partitioning and manifold alignment.
+Given a set of points in 2D space which correspond to the location of nucleus centers in a image of a population of cells, a Voronoi diagram partitions the image into regions.
+All the points in the region share the property that the closest nucleus center is the one that is also in the region.
+A sample Voronoi diagram associated with a cell nucleus channel is given below.
+![voronoi diagram](/Images/voronoi.png)
+*Voronoi diagram using nuclei centers*
+
+The Voronoi diagram helps overcome a common challenge in the cell segmentation task: cells tend to come into contact with each other, so it is hard to clearly define a boundary separating them based on the pixel intensity values alone.
+However, the Voronoi partitioning is primarily a mathematical tool, and it produces a rigid, polygonal segmentation.
+This is in contrast to the smoother cell boundaries that we see in the images.
+Propagate uses the Voronoi partitioning as a starting point and then smooths the boundary in accordance with the pixel intensity observed in the images.
+It utilizes manifold mathematics to transform Voronoi's Euclidean geometry to match the geometry suggested by the cell images.
 
 ![](/Images/cell_profiler.png)
 *Manifold regularization [Source: Kim et al. 2014]()*  
