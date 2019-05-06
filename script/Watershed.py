@@ -19,6 +19,9 @@ image = imread('E:/S19/CS 766/cs766/script/tempImage.tiff')
 distance = ndi.distance_transform_edt(image)
 local_maxi = peak_local_max(distance, indices=False, footprint=np.ones((3, 3)),
                             labels=image,num_peaks=34)
+local_maxi_ind = peak_local_max(distance, indices=True, footprint=np.ones((3, 3)),
+                            labels=image,num_peaks=34)
+
 markers = ndi.label(local_maxi)[0]
 labels = watershed(-distance, markers, mask=image)
 
@@ -35,6 +38,4 @@ for a in ax:
     a.set_axis_off()
 
 fig.tight_layout()
-plt.show()
-imshow(labels)
 plt.show()
