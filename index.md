@@ -76,7 +76,7 @@ To perfectly determine the cell boundaries, we fused the nuclei channel and the 
 - ###### Watershed Algorithm
 Watershed algorithm is used in image processing primarily for segmentation purposes. A watershed is a transformation defined on a grayscale image. The name refers metaphorically to a geological watershed, or drainage divide, which separates adjacent drainage basins. The watershed transformation treats the image it operates upon like a topographic map, with the brightness of each point representing its height, and finds the lines that run along the tops of ridges.
 The algorithm floods basins from the initial markers, until basins attributed to different markers meet on watershed lines. These markers are chosen as local minima of the image, from which basins are flooded.
-![](/Images/watershed_flow.png "Flowchart") ![](/Images/watershed.png)  
+<a href="url"><img src="/Images/watershed_flow.png" align="left" height="250" width="250" ></a> ![](/Images/watershed.png)  
 Here, we show a sample image passed through the watershed flowchart steps:
 
 - ###### K-means Clustering
