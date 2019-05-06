@@ -1,5 +1,5 @@
 # CS 766: Vision Approaches in Phenotypic Cell Approaches
-_Aaron Bajor, Ragini Rathore_
+_Aaron Baker, Ragini Rathore_
 ## Motivation
 ## State-of-the-art
 ## Implementation
@@ -9,7 +9,7 @@ _Aaron Bajor, Ragini Rathore_
 ## Conclusion
 ## Difficulties and Challenges
 ## Learnings and Future Work
-- Segmenting cells is hard due to cell-to-cell contacts.
-- Novel framework for evaluating drug efficacy.
-- Evaluate more drugs with more compute time.
+- Segmenting cells is difficult due to cell-to-cell contacts.
+- Novel frameworks for evaluating drug efficacy.
+- Evaluate more drugs with more compute power.
 
