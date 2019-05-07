@@ -82,8 +82,8 @@ The algorithm floods basins from the initial markers, until basins attributed to
 
 Here, we show a sample image passed through the watershed flowchart steps:  
 <br/>
-<img class="imgType2" src="Images/init_th.png" width="190">  <img class="imgType2" src="Images/dist_transform.png" width="200">&nbsp; &nbsp; <img class="imgType2" src="Images/watershed_op.png" width="200"> &nbsp; &nbsp; <img class="imgType2" src="Images/overseg.png" width="200" align = "center">
-*Intial thresholding*&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*Distance transform* &nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp;*Segmented and labelled*&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;*Over-segmented Image*  
+<img class="imgType2" src="Images/init_th.png" width="190">  <img class="imgType2" src="Images/dist_transform.png" width="200">&nbsp; &nbsp; <img class="imgType2" src="Images/watershed_op.png" width="200"> &nbsp; &nbsp; <img class="imgType2" src="Images/overseg.png" width="200">  
+*Intial thresholding* &nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*Distance transform* &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;*Segmented and labelled* &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp; *Over-segmented Image*  
 
 Here, we see the watershed algorithm has **over segmented** the cells. So, to prevent watershed from over segmenting, we set the initial markers, which are the local minima in the image, to be the nuclei centers which we found in the pre-processing step and repeat the watershed steps. Using this technique, we obtain properly the segmented images. A sample of the segmented cells is shown below.  
 ![](Images/segmented2.png)
