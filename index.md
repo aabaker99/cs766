@@ -1,6 +1,8 @@
 # CS 766: Vision Approaches in Phenotypic Cell Approaches
 _Aaron Baker, Ragini Rathore_  
 _May 2019_
+_GitHub Repo: [https://github.com/aabaker99/cs766](https://github.com/aabaker99/cs766)_
+
 ## Motivation
 The cost of developing a drug [is estimated to be somewhere between $320 million to $2.7 billion](https://blogs.sciencemag.org/pipeline/archives/2017/10/18/drug-development-costs-revisited).
 Recent technological advances have enabled new approaches to drug development.
@@ -85,7 +87,7 @@ The algorithm floods basins from the initial markers, until basins attributed to
 Here, we show a sample image passed through the watershed flowchart steps:  
 <br/>
 <img class="imgType2" src="Images/init_th.png" width="200">  <img class="imgType2" src="Images/dist_transform.png" width="200">&nbsp; &nbsp; <img class="imgType2" src="Images/watershed_op.png" width="200"> &nbsp; &nbsp; <img class="imgType2" src="Images/overseg.png" width="200">  
-*Intial thresholding* &nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*Distance transform* &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;*Segmented and labelled* &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp; *Over-segmented Image*  
+*Intial thresholding* &nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*Distance transform* &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp; &nbsp; &nbsp; *Segmented and labelled* &nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp; *Over-segmented Image*  
 
 Here, we see the watershed algorithm has **over segmented** the cells. So, to prevent watershed from over segmenting, we set the initial markers, which are the local minima in the image, to be the nuclei centers which we found in the pre-processing step and repeat the watershed steps.
 ![](Images/minima.png)
@@ -101,14 +103,19 @@ Using this technique, we obtain properly the segmented images. A sample of the s
     2. We categorize each item to its closest mean and we update the mean’s coordinates, which are the averages of the items categorized in that mean so far.
     3. We repeat the process for a given number of iterations and at the end, we have our clusters.  
   * We set up the initial ‘means’ as the nuclei centroids from the pre-processing step and *k* = number of nuclei centers.  
-  * A sample of 3 nuclei images obtained from k-means clustering method is shown below.
-  <img class="imgType2" src="Images/kmeans1.png" width="300">
-  <img class="imgType2" src="Images/kmeans2.png" width="300">
-  <img class="imgType2" src="Images/kmeans3.png" width="300">
+  * A sample of 3 nuclei images obtained from k-means clustering method is shown below.  
+  ![](Images/kmeans_sample.png)
+  *k-means sample image*
+
+  <img class="imgType2" src="Images/kmeans1.png" width="300" height = "250">
+  <img class="imgType2" src="Images/kmeans2.png" width="300" height = "250">
+  <img class="imgType2" src="Images/kmeans3.png" width="300" height = "250">
 
 ### Learning using Segmented Cells
+<font color = "red">Aaron would you please fill this. :) </font>
 
 ## Conclusion
+Using the segmentation techniques, we can identify the cell boundaries of the image dataset, thereby, modifying the dataset to consist of individual cells. This facilitates the learning methods which can be used to see if a particular drug was effective. Thus, these learning methods can be used to detect malicious cells and identify anomalies in the cells.
 
 ## Difficulties and Challenges
 - We needed more compute power to analyze the entire image dataset.
