@@ -74,7 +74,7 @@ To perfectly determine the cell boundaries, we fused the nuclei channel and the 
 *Sample image showing detected nuclei centers using Otsu's method.*
 
 #### Segmentation Algorithms
-- ###### Watershed Algorithm
+* ###### Watershed Algorithm
 Watershed algorithm is used in image processing primarily for segmentation purposes. A watershed is a transformation defined on a grayscale image. The name refers metaphorically to a geological watershed, or drainage divide, which separates adjacent drainage basins. The watershed transformation treats the image it operates upon like a topographic map, with the brightness of each point representing its height, and finds the lines that run along the tops of ridges.
 The algorithm floods basins from the initial markers, until basins attributed to different markers meet on watershed lines. These markers are chosen as local minima of the image, from which basins are flooded.  
 
@@ -95,18 +95,16 @@ Using this technique, we obtain properly the segmented images. A sample of the s
 ![](Images/segmented2.png)
 *Segmented Image*  
 
-- ###### K-means Clustering
-K-means clustering is a clustering algorithm that aims to partition n observations into k clusters. The algorithm works as follows:
-1. First we initialize k points, called means, randomly.
-2. We categorize each item to its closest mean and we update the mean’s coordinates, which are the averages of the items categorized in that mean so far.
-3. We repeat the process for a given number of iterations and at the end, we have our clusters.
-
-We set up the initial ‘means’ as the nuclei centroids from the pre-processing step and *k* = number of nuclei centers.
-
-A sample of 3 nuclei images obtained from k-means clustering method is shown below.
-<img class="imgType2" src="Images/kmeans1.png" width="300">
-<img class="imgType2" src="Images/kmeans2.png" width="300">
-<img class="imgType2" src="Images/kmeans3.png" width="300">
+* ###### K-means Clustering
+  * K-means clustering is a clustering algorithm that aims to partition n observations into k clusters. The algorithm works as follows:
+    1. First we initialize k points, called means, randomly.
+    2. We categorize each item to its closest mean and we update the mean’s coordinates, which are the averages of the items categorized in that mean so far.
+    3. We repeat the process for a given number of iterations and at the end, we have our clusters.  
+  * We set up the initial ‘means’ as the nuclei centroids from the pre-processing step and *k* = number of nuclei centers.  
+  * A sample of 3 nuclei images obtained from k-means clustering method is shown below.
+  <img class="imgType2" src="Images/kmeans1.png" width="300">
+  <img class="imgType2" src="Images/kmeans2.png" width="300">
+  <img class="imgType2" src="Images/kmeans3.png" width="300">
 
 ### Learning using Segmented Cells
 
