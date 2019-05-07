@@ -1,4 +1,4 @@
-# CS 766: Vision Approaches in Phenotypic Cell Approaches
+# CS 766: Vision Approaches in Phenotypic Cell Profiling
 _Aaron Baker, Ragini Rathore_  
 _May 2019_
 _GitHub Repo: [https://github.com/aabaker99/cs766](https://github.com/aabaker99/cs766)_
