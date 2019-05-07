@@ -111,11 +111,30 @@ Using this technique, we obtain properly the segmented images. A sample of the s
   <img class="imgType2" src="Images/kmeans2.png" width="300" height = "250">
   <img class="imgType2" src="Images/kmeans3.png" width="300" height = "250">
 
+* ##### Comparing Segmentation Methods
+We determined by manual inspection that our augmented Watershed method produces better segmentation results than k-means.
+
 ### Learning using Segmented Cells
-<font color = "red">Aaron would you please fill this. :) </font>
+Using the segmentation results, we produced separate images for each cell.
+Then, we applied readily available functions from the Python package [scikit-image](https://scikit-image.org/) to extract region and texture properties from the single cell images.
+Region properties include measurements such as area, perimeter, major axis length, and others.
+Texture properties include measurements such as contrast, dissimilarity, correlation, and more.
+Due to time constraints and the compute power required to preprocess and then train a classifier from this data, we selected a random sample of four chemical treatments for our analysis.
+We trained a logistic regression classifier for each of the treatments.
+For each treatment, we identified which multi-well plates contained wells that were treated with the chemical of interest.
+Then, we identified all control wells present on those plates.
+We trained a binary classifier using the images associated with each of the two types of wells.
+This resulted in a set of approximately 28,000 images of control cells and 200 treated cells.
+We evaluated the classifier by noting its average precision and plotting its precision-recall curve when tasked with predicting on the training set.
+The results for drug numbered 6820, SnAr Sulfonamide Library, are shown below.
+
+![pr curve for 6820](Images/sample_pr_curve.png)
+
+Based on our framework, and this precision-recall curve, we determined that this drug does not impact the cells.
 
 ## Conclusion
-Using the segmentation techniques, we can identify the cell boundaries of the image dataset, thereby, modifying the dataset to consist of individual cells. This facilitates the learning methods which can be used to see if a particular drug was effective. Thus, these learning methods can be used to detect malicious cells and identify anomalies in the cells.
+Using the segmentation techniques, we can identify the cell boundaries of the image dataset, thereby, modifying the dataset to consist of individual cells. 
+This facilitates the learning methods which can be used to see if a particular drug was effective. 
 
 ## Difficulties and Challenges
 - We needed more compute power to analyze the entire image dataset.
@@ -124,7 +143,6 @@ Using the segmentation techniques, we can identify the cell boundaries of the im
 
 ## Learnings and Future Work
 - Segmenting cells is a difficult task due to cell-to-cell contacts.
-- Novel frameworks for evaluating drug efficacy can be used.
 - Evaluate more drugs with more compute power.
 
 ## References
