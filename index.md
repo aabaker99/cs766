@@ -57,18 +57,19 @@ Propagate uses the Voronoi partitioning as a starting point and then smooths the
 It utilizes manifold mathematics to transform Voronoi's Euclidean geometry to match the geometry suggested by the cell images.
 
 ![](/Images/cell_profiler.png)
-*Manifold regularization [Source: Kim et al. 2014]()*  
+*Manifold regularization [Source: Kim et al. 2014]()*
 
 ## Implementation
 We implemented the watershed algorithm and the K-means clustering algorithm to initial segment the individual cells and to further use the segmented cells to determine a particular drug efficacy using machine learning techniques for classification.
 ### Segmentation
 #### Pre-processing
 1. The dataset we used consisted of 5 channels pertaining to the 5 dyes used for illuminating a certain part of the cell. However, the images were not very visible to the naked eye and we had to use a combination of different channels.  
-To perfectly determine the cell boundaries, we fused the nuclei channel and the golgi body channel images and used these set of fused grayscale images as our input to the segmentation algorithms. This enables to figure out if our segmentation algorithm segments the individual cell boundaries or fails. It also helps us clearly view the images.  
+To perfectly determine the cell boundaries, we fused the nuclei channel and the golgi body channel images and used these set of fused grayscale images as our input to the segmentation algorithms. This enables to figure out if our segmentation algorithm segments the individual cell boundaries or fails. It also helps us clearly view the images.
 ![](/Images/input_fused.png)
 *Sample dataset fused image*
 
 2. In this pre-processing step, we identified the individual nuclei centers and the total number of nuclei cells in the image. We used the images from the nuclei channel and used [Otsu's thresholding](https://en.wikipedia.org/wiki/Otsu%27s_method) method to find number of nuclei and their centers.  
+
 ![](/Images/nucleus_centers.png)
 *Sample image showing detected nuclei centers using Otsu's method.*
 
@@ -77,19 +78,35 @@ To perfectly determine the cell boundaries, we fused the nuclei channel and the 
 Watershed algorithm is used in image processing primarily for segmentation purposes. A watershed is a transformation defined on a grayscale image. The name refers metaphorically to a geological watershed, or drainage divide, which separates adjacent drainage basins. The watershed transformation treats the image it operates upon like a topographic map, with the brightness of each point representing its height, and finds the lines that run along the tops of ridges.
 The algorithm floods basins from the initial markers, until basins attributed to different markers meet on watershed lines. These markers are chosen as local minima of the image, from which basins are flooded.  
 
-<img class="imgType2" src="Images/watershed_flow.png" width="250"><img class="imgType2" class="imgType2" src="Images/watershed.png" width="250">  
+<img class="imgType2" src="Images/watershed_flow.png" width="250">&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<img class="imgType2" class="imgType2" src="Images/watershed.png" width="250">  
+*Flowchart describing steps of Watershed algorithm*
 <br/>
 
 Here, we show a sample image passed through the watershed flowchart steps:  
 <br/>
-<img class="imgType2" src="Images/init_th.png" width="190">  <img class="imgType2" src="Images/dist_transform.png" width="200">&nbsp; &nbsp; <img class="imgType2" src="Images/watershed_op.png" width="200"> &nbsp; &nbsp; <img class="imgType2" src="Images/overseg.png" width="200">  
-*Intial thresholding* &nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*Distance transform* &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;*Segmented and labelled* &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp; *Over-segmented Image*  
+<img class="imgType2" src="Images/init_th.png" width="200">  <img class="imgType2" src="Images/dist_transform.png" width="200">&nbsp; &nbsp; <img class="imgType2" src="Images/watershed_op.png" width="200"> &nbsp; &nbsp; <img class="imgType2" src="Images/overseg.png" width="200">  
+*Intial thresholding* &nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*Distance transform* &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;*Segmented and labelled* &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp; *Over-segmented Image*  
 
-Here, we see the watershed algorithm has **over segmented** the cells. So, to prevent watershed from over segmenting, we set the initial markers, which are the local minima in the image, to be the nuclei centers which we found in the pre-processing step and repeat the watershed steps. Using this technique, we obtain properly the segmented images. A sample of the segmented cells is shown below.  
+Here, we see the watershed algorithm has **over segmented** the cells. So, to prevent watershed from over segmenting, we set the initial markers, which are the local minima in the image, to be the nuclei centers which we found in the pre-processing step and repeat the watershed steps.
+![](Images/minima.png)
+*Image with initial markers as nuclei centers*
+
+Using this technique, we obtain properly the segmented images. A sample of the segmented cells is shown below.  
 ![](Images/segmented2.png)
 *Segmented Image*  
 
 - ###### K-means Clustering
+K-means clustering is a clustering algorithm that aims to partition n observations into k clusters. The algorithm works as follows:
+1. First we initialize k points, called means, randomly.
+2. We categorize each item to its closest mean and we update the mean’s coordinates, which are the averages of the items categorized in that mean so far.
+3. We repeat the process for a given number of iterations and at the end, we have our clusters.
+
+We set up the initial ‘means’ as the nuclei centroids from the pre-processing step and *k* = number of nuclei centers.
+
+A sample of 3 nuclei images obtained from k-means clustering method is shown below.
+<img class="imgType2" src="Images/kmeans1.png" width="300">
+<img class="imgType2" src="Images/kmeans2.png" width="300">
+<img class="imgType2" src="Images/kmeans3.png" width="300">
 
 ### Learning using Segmented Cells
 
@@ -104,6 +121,7 @@ Here, we see the watershed algorithm has **over segmented** the cells. So, to pr
 - Segmenting cells is a difficult task due to cell-to-cell contacts.
 - Novel frameworks for evaluating drug efficacy can be used.
 - Evaluate more drugs with more compute power.
+
 ## References
 [1] Caicedo, J. C., Cooper, S., Heigwer, F., Warchal, S., Qiu, P., Molnar, C., … Carpenter, A. E.(2017). Data-analysis strategies for image-based cell profiling. Nature Methods, 14(9), 849–863. [https://doi.org/10.1038/nmeth.4397](https://doi.org/10.1038/nmeth.4397)    
 [2] Grys, B. T., Lo, D. S., Sahin, N., Kraus, O. Z., Morris, Q., Boone, C., & Andrews, B. J. (2016). Machine learning and computer vision approaches for phenotypic profiling. The Journal of Cell Biology, 216(1), 65–71. [https://doi.org/10.1083/jcb.201610026](https://doi.org/10.1083/jcb.201610026)  
